@@ -19,7 +19,7 @@ router.post("/add-review", authenticate, addReview);
 router.get("/review/:id", getReviewsById);
 
 //Get All Reviews
-router.get("/reviews", getAllReviews);
+router.get("/reviews/:id", getAllReviews);
 
 //Delete Reviews
 router.post("/delete-review", authenticate, deleteReview);

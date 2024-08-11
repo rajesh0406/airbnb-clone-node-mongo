@@ -14,9 +14,9 @@ import ReviewRoutes from "./routes/reviewRoutes.js";
 //********* DOTENV CONFIGURATION *****/
 dotenv.config();
 
-const server = () => {
+const server = async () => {
   //****** DATABASE CONFIG *****/
-  connectDB();
+  await connectDB();
 
   //********* REST OBJECT ********/
   const app = express();

@@ -7,10 +7,10 @@ import BookingModel from "../model/BookingModel.js";
 export const createListing = async (req, res, next) => {
   try {
     const user = req.user;
-    const { placeId, availableDates, pricePerNight } = req.body;
+    const { placeId, availableDates, pricePerNight, maxPeople } = req.body;
 
     // Validation
-    if (!placeId || !availableDates || !pricePerNight) {
+    if (!placeId || !availableDates || !pricePerNight || !maxPeople) {
       return res.status(422).json({
         message: "Please Provide All Fields!",
       });
@@ -23,8 +23,10 @@ export const createListing = async (req, res, next) => {
     }
 
     const place = await PlaceModel.findById(placeId);
+    console.log("userId", user.userId);
+    console.log("ownerId", place.owner.toString());
 
-    if (user.userId === place.owner.toString()) {
+    if (user.userId !== place.owner.toString()) {
       return res.status(422).json({
         message: "Invalid User!",
       });
@@ -35,6 +37,7 @@ export const createListing = async (req, res, next) => {
       availableDates,
       pricePerNight,
       property: placeId,
+      maxPeople,
     });
     await listing.save();
 
@@ -55,7 +58,58 @@ export const createListing = async (req, res, next) => {
 //************ GET ALL LISTINGS **************/
 export const getAllListings = async (req, res, next) => {
   try {
-    const listings = await ListingModel.find();
+    const { search, tags } = req.query;
+
+    let matchStage = {};
+
+    if (search) {
+      const searchRegex = new RegExp(search, "i"); // Case-insensitive search
+      matchStage = {
+        ...matchStage,
+        $or: [
+          { "property.title": { $regex: searchRegex } },
+          { "property.description": { $regex: searchRegex } },
+        ],
+      };
+    }
+
+    // Filter by tags in the Place schema
+    if (tags) {
+      let tagArr = tags.split(",").map((tag) => tag.trim());
+      matchStage = {
+        ...matchStage,
+        "property.tags": { $in: tagArr },
+      };
+    }
+
+    const listings = await ListingModel.aggregate([
+      {
+        $lookup: {
+          from: "places",
+          localField: "property",
+          foreignField: "_id",
+          as: "property",
+        },
+      },
+      { $unwind: "$property" }, // Ensure we have a document or remove documents with null properties
+      { $match: matchStage }, // Apply the search and tag filtering
+      {
+        $project: {
+          "property.title": 1,
+          "property.description": 1,
+          "property.tags": 1,
+          "property.photos": 1,
+          "property._id": 1,
+          "property.address": 1,
+          availableDates: 1,
+          maxPeople: 1,
+          pricePerNight: 1,
+          createdAt: 1,
+          updatedAt: 1,
+        },
+      },
+    ]).exec();
+
     return res.status(200).json({
       message: "Success",
       data: {
@@ -98,14 +152,19 @@ export const getAllListingsOfUser = async (req, res, next) => {
 export const getListingById = async (req, res, next) => {
   try {
     const { id } = req.params;
-    if (!mongoose.Types.ObjectId.isValid(id)) {
+    if (!mongoose.Types.ObjectId.isValid(id.trim())) {
       return res.status(400).json({
         message: "Invalid ID!",
       });
     }
 
     //Get list
-    const listing = await ListingModel.findById(id);
+    const listing = await ListingModel.findById(id).populate({
+      path: "property",
+      populate: {
+        path: "owner",
+      },
+    });
     if (!listing) {
       return res.status(404).json({
         message: "Listing not found",

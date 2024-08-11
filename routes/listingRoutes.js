@@ -24,7 +24,7 @@ router.get("/all-listings", getAllListings);
 router.get("/all-listings-of-user", authenticate, getAllListingsOfUser);
 
 // Get Listing By Id
-router.get("/listing-of-id", getListingById);
+router.get("/listing-of-id/:id", getListingById);
 
 // Update Listing
 router.post("/update-listing", authenticate, updateListing);

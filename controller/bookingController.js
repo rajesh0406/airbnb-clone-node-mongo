@@ -1,5 +1,7 @@
 import BookingModel from "../model/BookingModel.js";
 import mongoose from "mongoose";
+import ListingModel from "../model/ListingModel.js";
+import { populate } from "dotenv";
 
 //*************** ADD NEW BOOKING *********************/
 export const bookingPlace = async (req, res, next) => {
@@ -29,10 +31,14 @@ export const bookingPlace = async (req, res, next) => {
       });
     }
 
+    const checkInDate = new Date(checkIn);
+    const checkOutDate = new Date(checkOut);
+
     // Check if the booking dates fall within available dates
     const isAvailable = listingData.availableDates.some((dateRange) => {
       const startDate = new Date(dateRange.startDate);
       const endDate = new Date(dateRange.endDate);
+
       return checkInDate >= startDate && checkOutDate <= endDate;
     });
 
@@ -42,9 +48,6 @@ export const bookingPlace = async (req, res, next) => {
           "Error: Booking dates do not fall within the available dates for this listing.",
       });
     }
-
-    const checkInDate = new Date(checkIn);
-    const checkOutDate = new Date(checkOut);
 
     // Check for date overlap with existing bookings for the same listing
     const conflictingBookings = await BookingModel.find({
@@ -69,9 +72,7 @@ export const bookingPlace = async (req, res, next) => {
       numberOfAdults,
       numberOfChildren,
       totalPrice,
-      mobile: user.mobile,
-      price,
-      guest: user.id,
+      guest: user.userId,
     });
     await booking.save();
 
@@ -82,6 +83,7 @@ export const bookingPlace = async (req, res, next) => {
       },
     });
   } catch (err) {
+    console.log("err", err);
     return res.status(500).json({
       message: "Internal Server Error!",
       error: err.message,
@@ -97,7 +99,12 @@ export const getBookingOfUser = async (req, res, next) => {
     //Get Bookings
     const allBookingsOfUser = await BookingModel.find({
       guest: user.userId,
-    }).populate("listing");
+    }).populate({
+      path: "listing",
+      populate: {
+        path: "property",
+      },
+    });
     if (allBookingsOfUser.length === 0) {
       return res.status(404).json({
         message: "No places found for the user.",
@@ -142,6 +149,73 @@ export const getBookingDetails = async (req, res, next) => {
       message: "Success",
       data: {
         booking,
+      },
+    });
+  } catch (err) {
+    return res.status(500).json({
+      message: "Internal Server Error!",
+      error: err.message,
+    });
+  }
+};
+
+//********* GET ALL BOOKINGS OF USER (BY LISTING ID) ************/
+export const getBookingOfUserForListing = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const user = req.user;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({
+        message: "Invalid ID!",
+      });
+    }
+
+    //Get Bookings
+    const bookingOnListing = await BookingModel.find({
+      guest: user.userId,
+      listing: id,
+    }).populate("listing");
+
+    //Success response
+    return res.status(200).json({
+      message: "Success",
+      data: {
+        bookingOnListing,
+      },
+    });
+  } catch (err) {
+    return res.status(500).json({
+      message: "Internal Server Error!",
+      error: err.message,
+    });
+  }
+};
+
+//********* GET RESERVATIONS ************/
+export const getReservations = async (req, res, next) => {
+  try {
+    const user = req.user;
+
+    //Get Bookings
+    const reservations = await BookingModel.find({})
+      .populate({
+        path: "listing",
+        populate: {
+          path: "property",
+          match: { owner: user.userId },
+        },
+      })
+      .populate({
+        path: "guest",
+        select: "_id name email mobile",
+      });
+
+    //Success response
+    return res.status(200).json({
+      message: "Success",
+      data: {
+        reservations,
       },
     });
   } catch (err) {

@@ -21,9 +21,9 @@ export const addReview = async (req, res, next) => {
     });
 
     // Only user who have made a booking can add a review
-    if (!booking) {
+    if (booking.length === 0) {
       return res.status(401).json({
-        message: "Error: Unauthorized",
+        message: "Error: Only booked users can add a review",
       });
     }
 
@@ -34,6 +34,7 @@ export const addReview = async (req, res, next) => {
       reviewer: user.userId,
     });
     await newReview.save();
+    x;
 
     return res.status(201).json({
       message: "Review Added Successfully!",
@@ -52,7 +53,21 @@ export const addReview = async (req, res, next) => {
 //************* GET ALL REVIEWS *****************/
 export const getAllReviews = async (req, res, next) => {
   try {
-    const reviews = await ReviewModel.find();
+    const { id } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(id.trim())) {
+      return res.status(400).json({
+        message: "Invalid ID!",
+      });
+    }
+
+    const reviews = await ReviewModel.find({
+      listing: id,
+    }).populate({
+      path: "reviewer",
+      select: "name email createdAt _id",
+    });
+
     return res.status(200).json({
       message: "Success",
       data: {
