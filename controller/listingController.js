@@ -69,6 +69,7 @@ export const getAllListings = async (req, res, next) => {
         $or: [
           { "property.title": { $regex: searchRegex } },
           { "property.description": { $regex: searchRegex } },
+          { "property.address": { $regex: searchRegex } },
         ],
       };
     }
@@ -129,18 +130,18 @@ export const getAllListingsOfUser = async (req, res, next) => {
   try {
     const user = req.user;
 
-    const listings = await ListingModel.find().populate({
-      path: "place",
+    const listings = await ListingModel.find({}).populate({
+      path: "property",
       match: { owner: user.userId },
     });
 
-    return {
+    return res.status(200).json({
       message: "Success",
       data: {
         listings,
       },
-    };
-  } catch (e) {
+    });
+  } catch (err) {
     return res.status(500).json({
       message: "Internal Server Error!",
       error: err.message,
