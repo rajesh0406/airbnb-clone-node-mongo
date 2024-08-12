@@ -22,12 +22,7 @@ const server = async () => {
   const app = express();
 
   //********* MIDDLEWARE **********/
-  app.use(
-    cors({
-      origin: "http://localhost:5173",
-      credentials: true,
-    })
-  );
+  app.use(cors());
   app.use("/uploads", express.static("uploads"));
   app.use(morgan("dev"));
   app.use(express.json());
