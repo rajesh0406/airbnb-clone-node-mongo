@@ -14,7 +14,7 @@
     "type": "git",
     "url": "git@github.com:rajesh0406/airbnb-clone-node-mongo.git"
   },
-  "author": "Haris Mohanty",
+  "author": "Vishnu Varadhan",
   "license": "ISC",
   "homepage": "https://github.com/rajesh0406/airbnb-clone-node-mongo#readme",
   "dependencies": {
