@@ -7,18 +7,16 @@
   "scripts": {
     "dev": "nodemon app.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "seed": "node scripts/seed-places.js"
+    "seed": "node scripts/seed-places.js",
+    "start": "node app.js"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Haris-Mohanty/Airbnb-Clone.git"
+    "url": "git@github.com:rajesh0406/airbnb-clone-node-mongo.git"
   },
   "author": "Haris Mohanty",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/Haris-Mohanty/Airbnb-Clone/issues"
-  },
-  "homepage": "https://github.com/Haris-Mohanty/Airbnb-Clone#readme",
+  "homepage": "https://github.com/rajesh0406/airbnb-clone-node-mongo#readme",
   "dependencies": {
     "bcrypt": "^5.1.1",
     "colors": "^1.4.0",
