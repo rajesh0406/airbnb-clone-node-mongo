@@ -242,7 +242,7 @@ export const deleteListing = async (req, res, next) => {
     const user = req.user;
 
     const listing = await ListingModel.findById(listingId).populate({
-      path: "place",
+      path: "property",
       match: {
         owner: user.userId,
       },
@@ -274,12 +274,12 @@ export const deleteListing = async (req, res, next) => {
     });
 
     if (activeBookings?.length > 0 || futureBookings?.length > 0) {
-      return res.json(400).json({
+      return res.status(400).json({
         message:
           activeBookings?.length > 0 && futureBookings?.length > 0
-            ? "Error: Cannot Delete. There are future and active bookings associated with it."
+            ? "Error: Cannot Delete. There are upcoming and active bookings associated with it."
             : `Error: Cannot Delete. There are ${
-                activeBookings?.length > 0 ? "active" : "future"
+                activeBookings?.length > 0 ? "active" : "upcoming"
               } bookings associated with it.`,
       });
     }
