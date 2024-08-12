@@ -22,37 +22,7 @@ const server = async () => {
   const app = express();
 
   //********* MIDDLEWARE **********/
-  app.use(
-    cors({
-      origin: (origin, callback) => {
-        callback(null, origin || "*");
-      },
-      methods: ["HEAD", "PUT", "PATCH", "POST", "GET", "DELETE", "OPTIONS"],
-      credentials: true,
-      allowedHeaders: [
-        "Content-Type",
-        "Authorization",
-        "Origin",
-        "Accept",
-        "X-Requested-With",
-      ],
-    })
-  );
-
-  // Handle preflight requests
-  app.options("*", (req, res) => {
-    res.header("Access-Control-Allow-Origin", req.headers.origin || "*");
-    res.header(
-      "Access-Control-Allow-Headers",
-      "Origin, X-Requested-With, Content-Type, Accept, Authorization"
-    );
-    res.header(
-      "Access-Control-Allow-Methods",
-      "GET, POST, PUT, DELETE, OPTIONS"
-    );
-    res.header("Access-Control-Allow-Credentials", "true");
-    res.sendStatus(200);
-  });
+  app.use(cors({ origin: "*" }));
 
   app.use("/uploads", express.static("uploads"));
   app.use(morgan("dev"));
