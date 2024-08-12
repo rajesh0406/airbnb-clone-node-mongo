@@ -24,7 +24,9 @@ const server = async () => {
   //********* MIDDLEWARE **********/
   app.use(
     cors({
-      origin: true, // Allow all origins
+      origin: (origin, callback) => {
+        callback(null, origin || "*");
+      },
       methods: ["HEAD", "PUT", "PATCH", "POST", "GET", "DELETE", "OPTIONS"],
       credentials: true,
       allowedHeaders: [
@@ -39,7 +41,7 @@ const server = async () => {
 
   // Handle preflight requests
   app.options("*", (req, res) => {
-    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Origin", req.headers.origin || "*");
     res.header(
       "Access-Control-Allow-Headers",
       "Origin, X-Requested-With, Content-Type, Accept, Authorization"
