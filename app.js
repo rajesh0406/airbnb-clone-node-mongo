@@ -22,7 +22,22 @@ const server = async () => {
   const app = express();
 
   //********* MIDDLEWARE **********/
-  app.use(cors());
+  app.use(
+    cors({
+      origin: ["*"],
+      methods: ["HEAD", "PUT", "PATCH", "POST", "GET", "DELETE", "OPTIONS"],
+      credentials: true,
+      allowedHeaders: [
+        "Content-type",
+        "Authorization",
+        "Origin",
+        "Access-Control-Allow-Origin",
+        "Accept",
+        "Options",
+        "X-Requested-With",
+      ],
+    })
+  );
   app.use("/uploads", express.static("uploads"));
   app.use(morgan("dev"));
   app.use(express.json());
