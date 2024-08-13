@@ -25,8 +25,7 @@ const server = async () => {
 
   app.use(
     cors({
-      origin:
-        "https://airbnb-clone-react-a7f80va53-rajesh-jayaramans-projects.vercel.app", // Allowed origin
+      origin: "*", // Allowed origin
       methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"], // Allowed methods
       allowedHeaders: [
         "X-CSRF-Token",
