@@ -22,7 +22,12 @@ const server = async () => {
   const app = express();
 
   //********* MIDDLEWARE **********/
-  app.use(cors({ origin: "*" }));
+  app.use(
+    cors({
+      origin:
+        "https://airbnb-clone-react-a7f80va53-rajesh-jayaramans-projects.vercel.app",
+    })
+  );
 
   app.use("/uploads", express.static("uploads"));
 
