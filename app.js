@@ -23,19 +23,7 @@ const server = async () => {
 
   //********* MIDDLEWARE **********/
 
-  app.use(
-    cors({
-      origin: "*", // Allowed origin
-      methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"], // Allowed methods
-      allowedHeaders: [
-        "X-CSRF-Token",
-        "X-Requested-With",
-        "Accept",
-        "Content-Type",
-      ], // Allowed headers
-      credentials: true, // Allow cookies and credentials
-    })
-  );
+  app.use(cors({ origin: "*" }));
 
   // Handle OPTIONS preflight requests
   app.options("*", cors());
