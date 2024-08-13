@@ -23,8 +23,10 @@ const server = async () => {
 
   //********* MIDDLEWARE **********/
   app.use(cors({ origin: "*" }));
+  app.options("*", cors());
 
   app.use("/uploads", express.static("uploads"));
+
   app.use(morgan("dev"));
   app.use(express.json());
   app.use(cookieParser());
