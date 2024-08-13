@@ -1,28 +1,21 @@
 {
-  "version": 2,
-  "builds": [{ "src": "app.js", "use": "@vercel/node" }],
   "headers": [
     {
-      "source": "/api/(.*)",
+      "source": "/.*",
       "headers": [
-        { "key": "Access-Control-Allow-Credentials", "value": "true" },
         {
           "key": "Access-Control-Allow-Origin",
-          "value": "https://airbnb-clone-react-a7f80va53-rajesh-jayaramans-projects.vercel.app"
-        },
-        {
-          "key": "Access-Control-Allow-Methods",
-          "value": "GET,OPTIONS,PATCH,DELETE,POST,PUT"
+          "value": "*"
         },
         {
           "key": "Access-Control-Allow-Headers",
-          "value": "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version"
+          "value": "X-Requested-With, Access-Control-Allow-Origin, X-HTTP-Method-Override, Content-Type, Authorization, Accept"
+        },
+        {
+          "key": "Access-Control-Allow-Credentials",
+          "value": "true"
         }
       ]
-    },
-    {
-      "source": "/api/(.*)",
-      "headers": [{ "key": "Vary", "value": "Origin" }]
     }
   ]
 }
