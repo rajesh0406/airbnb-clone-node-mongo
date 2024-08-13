@@ -22,10 +22,11 @@ const server = async () => {
   const app = express();
 
   //********* MIDDLEWARE **********/
+
   app.use(
     cors({
       origin:
-        "https://airbnb-clone-react-a7f80va53-rajesh-jayaramans-projects.vercel.app", // Specify allowed origin
+        "https://airbnb-clone-react-a7f80va53-rajesh-jayaramans-projects.vercel.app", // Allowed origin
       methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"], // Allowed methods
       allowedHeaders: [
         "X-CSRF-Token",
@@ -33,18 +34,12 @@ const server = async () => {
         "Accept",
         "Content-Type",
       ], // Allowed headers
-      credentials: true,
+      credentials: true, // Allow cookies and credentials
     })
   );
 
-  app.use(function (req, res, next) {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header(
-      "Access-Control-Allow-Headers",
-      "Origin, X-Requested-With, Content-Type, Accept"
-    );
-    next();
-  });
+  // Handle OPTIONS preflight requests
+  app.options("*", cors());
 
   app.use("/uploads", express.static("uploads"));
 
