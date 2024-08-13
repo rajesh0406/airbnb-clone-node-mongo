@@ -22,11 +22,20 @@ const server = async () => {
   const app = express();
 
   //********* MIDDLEWARE **********/
+  const allowedOrigins = ["https://airbnb-clone-react-axxy.onrender.com"];
 
-  app.use(cors({ origin: "*" }));
-
-  // Handle OPTIONS preflight requests
-  app.options("*", cors());
+  app.use(
+    cors({
+      origin: function (origin, callback) {
+        if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+          callback(null, true);
+        } else {
+          callback(new Error("Not allowed by CORS"));
+        }
+      },
+      credentials: true,
+    })
+  );
 
   app.use("/uploads", express.static("uploads"));
 
