@@ -22,7 +22,10 @@ const server = async () => {
   const app = express();
 
   //********* MIDDLEWARE **********/
-  const allowedOrigins = ["https://airbnb-clone-react-axxy.onrender.com"];
+  const allowedOrigins = [
+    "https://airbnb-clone-react-axxy.onrender.com",
+    "https://superlative-llama-cbdfa0.netlify.app",
+  ];
 
   app.use(
     cors({
