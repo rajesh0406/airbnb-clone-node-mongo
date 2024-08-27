@@ -49,7 +49,10 @@ export const registerUser = async (req, res, next) => {
     );
 
     //Set cookie
-    res.cookie("token", token);
+    res.cookie("token", token, {
+      sameSite: "none",
+      secure: "false",
+    });
 
     return res.status(201).json({
       message: "User Registered Successfully!",
@@ -113,7 +116,10 @@ export const loginUser = async (req, res, next) => {
     );
 
     //Set cookie
-    res.cookie("token", token);
+    res.cookie("token", token, {
+      sameSite: "none",
+      secure: "false",
+    });
 
     //Login Success
     return res.status(200).json({
